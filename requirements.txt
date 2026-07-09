@@ -1,3 +1,6 @@
 langchain
 langgraph
 Fastapi
+pydantic
+pydantic_settings
+# -e .
