@@ -4,19 +4,9 @@ Custom Exceptions
 
 This module contains all custom exceptions used throughout the
 application.
-
-Why Custom Exceptions?
-----------------------
-Instead of raising generic exceptions, custom exceptions make the
-code more readable, easier to debug, and simpler to handle.
-
-Example
--------
-try:
-    ...
-except Exception as e:
-    raise RetrievalError("Failed to retrieve documents.") from e
 """
+
+
 
 
 class ApplicationError(Exception):
