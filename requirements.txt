@@ -1,5 +1,7 @@
 langchain
 langgraph
+langchain-huggingface
+huggingface_hub
 Fastapi
 pydantic
 pydantic_settings
