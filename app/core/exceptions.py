@@ -35,6 +35,9 @@ class DatabaseError(ApplicationError):
 class LLMError(ApplicationError):
     """Raised when an LLM request fails."""
 
+class DocumentLoadingError(ApplicationError):
+    """Raised when a document cannot be loaded."""
+
 
 class RetrievalError(ApplicationError):
     """Raised when document retrieval fails."""

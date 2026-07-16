@@ -1,8 +1,10 @@
 langchain
 langgraph
 langchain-huggingface
+langchain-community
 huggingface_hub
 Fastapi
+pypdf
 pydantic
 pydantic_settings
 # -e .
