@@ -42,10 +42,7 @@ class RecursiveChunker(BaseChunker):
             ],
         )
 
-    def split(
-        self,
-        documents: list[Document]
-    ) -> list[Chunk]:
+    def split( self,documents: list[Document] ) -> list[Chunk]:
         """
         Split documents into chunks.
 
@@ -58,10 +55,7 @@ class RecursiveChunker(BaseChunker):
         list[Chunk]
         """
 
-        logger.info(
-            "Chunking %d document(s)...",
-            len(documents)
-        )
+        logger.info("Chunking %d document(s)...",len(documents) )
 
         chunks: list[Chunk] = []
 
@@ -69,9 +63,7 @@ class RecursiveChunker(BaseChunker):
 
             split_text = self.text_splitter.split_text( document.page_content)
 
-            document_id = (
-                document.metadata.get( "content_hash","")
-            )
+            document_id = (  document.metadata.get( "content_hash","") )
 
             for index, text in enumerate(split_text):
 

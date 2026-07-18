@@ -19,9 +19,7 @@ class Chunk:
 
     metadata: dict[str, Any] = field(default_factory=dict)
 
-    chunk_id: str = field(
-        default_factory=lambda: str(uuid.uuid4())
-    )
+    chunk_id: str = field( default_factory=lambda: str(uuid.uuid4()))
 
     chunk_index: int = 0
 
