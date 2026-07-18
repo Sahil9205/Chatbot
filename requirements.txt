@@ -7,4 +7,5 @@ Fastapi
 pypdf
 pydantic
 pydantic_settings
+sentence_transformers
 # -e .
