@@ -5,8 +5,7 @@ Abstract BM25 Interface.
 from abc import ABC, abstractmethod
 
 from app.rag_engine.ingestion.chunking.chunk_schema import Chunk
-from app.rag_engine.retrieval.schemas.retrieved_chunk import RetrievedChunk
-
+from .bm25_result import BM25Result
 
 class BaseKeywordIndex(ABC):
     """
@@ -21,7 +20,7 @@ class BaseKeywordIndex(ABC):
         pass
 
     @abstractmethod
-    def search(self,query: str,top_k: int = 5,) -> list[RetrievedChunk]:
+    def search(self,query: str,top_k: int = 5,) -> list[BM25Result]:
         """
         Perform keyword search.
         """
