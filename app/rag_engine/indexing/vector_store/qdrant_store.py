@@ -8,7 +8,7 @@ from the Qdrant vector database.
 from typing import List
 
 from qdrant_client import QdrantClient
-from qdrant_client.models import (VectorParams,PointStruct,Filter, Distance,)
+from qdrant_client.models import (ScoredPoint, VectorParams,PointStruct,Filter, Distance,ScoredPoint)
 
 from app.core.config import settings
 from app.core.constants import DISTANCE_MAPPING
@@ -152,18 +152,55 @@ class QdrantStore(BaseVectorStore):
     # Search
     ####################################################################
 
-    def search(self,query_vector: list[float],top_k: int = 5,):
+    def search(
+        self,
+        query_vector: list[float],
+        top_k: int = 5,
+        query_filter: Filter | None = None,
+        ) -> list[ScoredPoint]:  
+        """
+        Search for similar vectors in the Qdrant collection.
 
-        results = self.client.search(
+        Parameters
+        ----------
+        query_vector : list[float]
+            Query embedding.
 
-            collection_name=self.collection_name,
+        top_k : int
+            Number of nearest neighbours to retrieve.
 
-            query_vector=query_vector,
+        query_filter : Filter | None
+            Optional metadata filter.
 
-            limit=top_k,
-        )
+        Returns
+        -------
+        list[ScoredPoint]
+        """
 
-        return results
+        logger.info("Searching collection '%s'.",self.collection_name,)
+
+        try:
+
+            results = self.client.search(
+
+                collection_name=self.collection_name,
+
+                query_vector=query_vector,
+
+                query_filter=query_filter,
+
+                limit=top_k,
+            )
+
+            logger.info("Retrieved %d result(s).",len(results),)
+
+            return results
+
+        except Exception:
+
+            logger.exception("Failed to search Qdrant collection '%s'.",self.collection_name,)
+
+            raise
 
     ####################################################################
     # Delete

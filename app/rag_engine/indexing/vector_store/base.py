@@ -4,6 +4,8 @@ Abstract Vector Store Interface.
 
 from abc import ABC, abstractmethod
 
+from qdrant_client.models import Filter, ScoredPoint
+
 from app.rag_engine.indexing.embeddings.embedding_schema import EmbeddedChunk
 
 
@@ -20,12 +22,19 @@ class BaseVectorStore(ABC):
         pass
 
     @abstractmethod
+    def collection_exists(self) -> bool:
+        """
+        Check whether the collection exists.
+        """
+        pass
+
+    @abstractmethod
     def add(
         self,
         chunks: list[EmbeddedChunk],
     ) -> None:
         """
-        Insert embedded chunks.
+        Insert embedded chunks into the vector store.
         """
         pass
 
@@ -34,25 +43,15 @@ class BaseVectorStore(ABC):
         self,
         query_vector: list[float],
         top_k: int = 5,
-    ) -> list[EmbeddedChunk]:
+        query_filter: Filter | None = None,) -> list[ScoredPoint]:
         """
-        Search similar vectors.
-        """
-        pass
-
-    @abstractmethod
-    def delete(
-        self,
-        ids: list[str],
-    ) -> None:
-        """
-        Delete vectors.
+        Search for similar vectors.
         """
         pass
 
     @abstractmethod
-    def collection_exists(self) -> bool:
+    def delete(self,ids: list[str],) -> None:
         """
-        Check collection existence.
+        Delete vectors by their IDs.
         """
         pass
