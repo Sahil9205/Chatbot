@@ -67,3 +67,11 @@ class BaseEmbeddingModel(ABC):
         Dimension of the embedding vector.
         """
         pass
+
+
+    @abstractmethod
+    def embed_query(self,query: str,) -> list[float]:
+        """
+        Generate an embedding for a search query.
+         """
+        pass

@@ -56,3 +56,17 @@ class HuggingFaceEmbeddingModel(BaseEmbeddingModel):
         """
 
         return self._model.encode(texts,normalize_embeddings=True, ).tolist()
+
+    
+    def embed_query(self,query: str,) -> list[float]:
+        """
+        Generate embedding for a search query.
+        """
+
+        logger.info("Generating embedding for search query.")
+
+        embedding = self._model.encode(query,normalize_embeddings=True,).tolist()
+
+        logger.info("Successfully generated query embedding.")
+
+        return embedding

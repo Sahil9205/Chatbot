@@ -4,8 +4,11 @@ Embedding Service
 Converts Chunk objects into EmbeddedChunk objects.
 """
 
+from torch import embedding
+
 from app.core.logging import get_logger
 from app.rag_engine.ingestion.chunking.chunk_schema import Chunk
+from app.rag_engine.retrieval.schemas import query
 
 from .base import BaseEmbeddingModel
 from .embedding_schema import EmbeddedChunk
@@ -73,3 +76,24 @@ class EmbeddingService:
         logger.info("Successfully generated %d embeddings.",len(embedded_chunks),)
 
         return embedded_chunks
+    
+    def embed_query(self,query: str,) -> list[float]:
+        """
+        Generate embedding for a search query.
+
+        Parameters
+        ----------
+        query : str
+
+        Returns
+             -------
+        list[float]
+        """
+
+        logger.info("Generating query embedding.")
+
+        embedding = self.embedding_model.embed_query(query)
+
+        logger.info("Successfully generated query embedding.")
+
+        return embedding
