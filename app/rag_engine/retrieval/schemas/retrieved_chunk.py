@@ -9,6 +9,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
+from .source import RetrievalSource
 
 class RetrievedChunk(BaseModel):
     """
@@ -35,7 +36,7 @@ class RetrievedChunk(BaseModel):
         description="Retrieval similarity score.",
     )
 
-    source: str = Field(
+    source: RetrievalSource = Field(
         ...,
         description="Retriever that returned this chunk.",
     )
@@ -57,10 +58,7 @@ class RetrievedChunk(BaseModel):
         "source",
     )
     @classmethod
-    def validate_string_fields(
-        cls,
-        value: str,
-    ) -> str:
+    def validate_string_fields(cls,value: str,) -> str:
         """
         Validate string fields.
         """
@@ -78,8 +76,7 @@ class RetrievedChunk(BaseModel):
     @classmethod
     def validate_score(
         cls,
-        value: float,
-    ) -> float:
+        value: float,) -> float:
         """
         Validate retrieval score.
         """
