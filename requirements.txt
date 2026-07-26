@@ -8,4 +8,7 @@ pypdf
 pydantic
 pydantic_settings
 sentence_transformers
+
+qdrant-client
+rank-bm25
 # -e .

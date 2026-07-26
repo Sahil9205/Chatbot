@@ -54,9 +54,9 @@ class Settings(BaseSettings):
     # LLM
     # ======================================================
 
-    DEFAULT_LLM_PROVIDER: str = "openai"
+    DEFAULT_LLM_PROVIDER: str = "huggingface"
 
-    DEFAULT_MODEL: str = "gpt-4.1"
+    DEFAULT_MODEL: str = "mistralai/Mistral-7B-Instruct-v0.3"
 
     TEMPERATURE: float = 0.2
 
@@ -66,7 +66,13 @@ class Settings(BaseSettings):
     # Embeddings
     # ======================================================
 
-    EMBEDDING_MODEL: str = "text-embedding-3-large"
+    EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
+
+    # ======================================================
+    # Reranker
+    # ======================================================
+
+    RERANKER_MODEL_NAME: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 
     # ======================================================
     # API Keys
@@ -86,7 +92,17 @@ class Settings(BaseSettings):
 
     REDIS_URL: str = ""
 
-    QDRANT_URL: str = ""
+    # ======================================================
+    # Qdrant
+    # ======================================================
+
+    QDRANT_URL: str = "http://localhost:6333"
+
+    QDRANT_API_KEY: str | None = None
+
+    QDRANT_COLLECTION_NAME: str = "company_documents"
+
+    QDRANT_DISTANCE_METRIC: str = "cosine"
 
     # ======================================================
     # RAG
@@ -97,6 +113,23 @@ class Settings(BaseSettings):
     CHUNK_OVERLAP: int = 200
 
     TOP_K: int = 5
+
+    RRF_K: int = 60
+
+    DENSE_TOP_K: int = 20
+
+    SPARSE_TOP_K: int = 20
+
+    FINAL_TOP_K: int = 10
+
+    # ======================================================
+    # generation
+    # ======================================================
+
+    RETRIEVAL_SCORE_THRESHOLD: float = 0.70
+
+    MINIMUM_CITATIONS: int = 1
+    
 
     # ======================================================
     # Logging
