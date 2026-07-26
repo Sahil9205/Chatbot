@@ -10,6 +10,7 @@ from time import perf_counter
 from app.core.logging import get_logger
 
 from app.rag_engine.retrieval.query_understanding import (
+    QueryUnderstanding,
     QueryUnderstandingPipeline,
 )
 from app.rag_engine.retrieval.hybrid_retriever import HybridRetriever
@@ -32,7 +33,7 @@ class RetrievalPipeline:
 
     def __init__(
         self,
-        query_pipeline: QueryUnderstandingPipeline,
+        query_pipeline: QueryUnderstanding,
         retriever: HybridRetriever,
         reranker: RerankerService,
     ) -> None:
@@ -41,9 +42,9 @@ class RetrievalPipeline:
         ----------
         query_pipeline : QueryUnderstandingPipeline
 
-        retriever : HybridRetriever
+        retriever : BaseRetriever
 
-        reranker : RerankerService
+        reranker : BaseReranker
         """
 
         self.query_pipeline = query_pipeline
