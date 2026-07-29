@@ -35,6 +35,42 @@ class DatabaseError(ApplicationError):
 class LLMError(ApplicationError):
     """Raised when an LLM request fails."""
 
+class IntentClassificationError(ApplicationError):
+    """Raised when query intent classification fails."""
+
+
+########################################################################
+# Conversation
+########################################################################
+
+
+class ConversationError(ApplicationError):
+    """
+    Base conversation exception.
+    """
+
+
+class ConversationNotFoundError(ConversationError):
+    """
+    Raised when a conversation does not exist.
+    """
+
+
+class SessionNotFoundError(ConversationError):
+    """
+    Raised when a session cannot be found.
+    """
+
+
+class MemoryError(ApplicationError):
+    """
+    Raised when memory operations fail.
+    """
+
+########################################################################
+# Documents
+########################################################################
+
 class DocumentLoadingError(ApplicationError):
     """Raised when a document cannot be loaded."""
 
