@@ -1,12 +1,15 @@
 """
 Application Container.
 
-Provides a single place where all application
-dependencies are created and managed.
+Creates and owns all application dependencies.
+Acts as the Composition Root of the application.
 """
 
+from app.chat.chat_service import ChatService
 from app.rag_engine.rag_engine import RAGEngine
 
+from .chat import build_chat_service
+from .conversation import ConversationContainer
 from .rag import build_rag_engine
 
 
@@ -14,16 +17,32 @@ class ApplicationContainer:
     """
     Dependency Injection Container.
 
-    Responsible for constructing all application
-    services exactly once.
+    Responsible for constructing every application
+    service exactly once.
     """
 
     def __init__(self) -> None:
-        """
-        Initialize the application container.
-        """
+
+        ###############################################################
+        # RAG Engine
+        ###############################################################
 
         self._rag_engine = build_rag_engine()
+
+        ###############################################################
+        # Conversation Layer
+        ###############################################################
+
+        self._conversation = ConversationContainer()
+
+        ###############################################################
+        # Chat Service
+        ###############################################################
+
+        self._chat_service = build_chat_service(
+            rag_engine=self._rag_engine,
+            conversation_container=self._conversation,
+        )
 
     ####################################################################
     # Properties
@@ -32,7 +51,23 @@ class ApplicationContainer:
     @property
     def rag_engine(self) -> RAGEngine:
         """
-        Return the configured RAG Engine.
+        Return configured RAG Engine.
         """
 
         return self._rag_engine
+
+    @property
+    def conversation(self) -> ConversationContainer:
+        """
+        Return conversation container.
+        """
+
+        return self._conversation
+
+    @property
+    def chat_service(self) -> ChatService:
+        """
+        Return configured ChatService.
+        """
+
+        return self._chat_service

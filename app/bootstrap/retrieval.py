@@ -73,7 +73,7 @@ def build_retrieval_pipeline() -> RetrievalPipeline:
     # Fusion
     ###############################################################
 
-    fusion = ReciprocalRankFusion()
+    fusion_strategy = ReciprocalRankFusion()
 
     ###############################################################
     # Hybrid Retriever
@@ -82,7 +82,7 @@ def build_retrieval_pipeline() -> RetrievalPipeline:
     hybrid_retriever = HybridRetriever(
         dense_retriever=dense_retriever,
         sparse_retriever=sparse_retriever,
-        fusion_strategy=fusion,
+        fusion_strategy=fusion_strategy,
     )
 
     ###############################################################
