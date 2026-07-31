@@ -9,6 +9,7 @@ from app.api.lifespan import lifespan
 from app.api.routers.chat import router as chat_router
 from app.api.routers.health import router as health_router
 from app.api.routers.session import router as session_router
+from app.core.logging import configure_logging
 
 
 app = FastAPI(

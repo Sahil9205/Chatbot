@@ -10,19 +10,18 @@ from fastapi import FastAPI
 
 from app.ai.llm.llm import initialize_llm
 from app.api.dependencies import get_container
-from app.core.logging import get_logger
+from app.core.logging import configure_logging, get_logger
 
 logger = get_logger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(
-    app: FastAPI,
-):
+async def lifespan(app: FastAPI,):
     """
     Manage application startup and shutdown.
     """
 
+    configure_logging()
     ###############################################################
     # Startup
     ###############################################################
