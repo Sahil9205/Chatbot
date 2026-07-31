@@ -11,4 +11,7 @@ sentence_transformers
 
 qdrant-client
 rank-bm25
+
+uvicorn
+
 # -e .

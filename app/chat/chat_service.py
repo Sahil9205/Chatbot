@@ -4,8 +4,6 @@ Chat Service.
 Coordinates chat interactions between the
 application layer and the RAG engine.
 """
-
-from app.chat.chat_response import ChatResponse
 from app.core.logging import get_logger
 
 from app.conversation.memory_service import MemoryService
@@ -15,9 +13,9 @@ from app.conversation.schemas.message import (
 )
 from app.conversation.session_service import SessionService
 
-from app.rag_engine.generation.schemas.generation_response import (
-    GenerationResponse,
-)
+from app.api.schemas.chat_request import ChatRequest
+from app.api.schemas.chat_response import ChatResponse
+
 from app.rag_engine.rag_engine import RAGEngine
 
 
@@ -48,20 +46,17 @@ class ChatService:
 
     def chat(
         self,
-        session_id: str,
-        query: str,
-    ) -> GenerationResponse:
+        request: ChatRequest,
+    ) -> ChatResponse:
         """
         Process a user chat request.
         """
 
-        logger.info(
-            "Processing chat request."
-        )
+        logger.info("Processing chat request.")
 
         conversation_id = (
             self.session_service.get_conversation_id(
-                session_id
+                request.session_id
             )
         )
 
@@ -77,7 +72,7 @@ class ChatService:
 
                 role=MessageRole.USER,
 
-                content=query,
+                content=request.query,
             ),
         )
 
@@ -85,8 +80,8 @@ class ChatService:
         # Run RAG
         ###############################################################
 
-        response = self.rag_engine.answer(
-            query=query,
+        generation_response = self.rag_engine.answer(
+            query=request.message,
         )
 
         ###############################################################
@@ -101,7 +96,7 @@ class ChatService:
 
                 role=MessageRole.ASSISTANT,
 
-                content=response.answer.text,
+                content=generation_response.answer.text,
             ),
         )
 
@@ -111,9 +106,9 @@ class ChatService:
 
         return ChatResponse(
             
-            session_id=session_id,
-            answer=response.answer.text,
-            citations=response.citations,
-            generation_time=response.generation_time,
-            has_sufficient_context=response.has_sufficient_context,
+            session_id=request.session_id,
+            answer=generation_response.answer.text,
+            citations=generation_response.citations,
+            generation_time=generation_response.generation_time,
+            has_sufficient_context=generation_response.has_sufficient_context,
         )

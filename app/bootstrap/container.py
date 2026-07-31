@@ -12,6 +12,10 @@ from .chat import build_chat_service
 from .conversation import ConversationContainer
 from .rag import build_rag_engine
 
+from app.conversation.conversation_service import ConversationService
+from app.conversation.session_service import SessionService
+from app.conversation.memory_service import MemoryService
+
 
 class ApplicationContainer:
     """
@@ -71,3 +75,29 @@ class ApplicationContainer:
         """
 
         return self._chat_service
+
+    @property
+    def conversation_service(self) -> ConversationService:
+        """
+        Return configured ConversationService.
+        """
+
+        return self._conversation.conversation_service
+
+
+    @property
+    def session_service(self) -> SessionService:
+        """
+        Return configured SessionService.
+        """
+
+        return self._conversation.session_service
+
+
+    @property
+    def memory_service(self) -> MemoryService:
+        """
+        Return configured MemoryService.
+        """
+
+        return self._conversation.memory_service
