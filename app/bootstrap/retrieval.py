@@ -2,6 +2,7 @@
 Bootstrap the Retrieval Pipeline.
 """
 
+from app.ai import llm
 from app.rag_engine.indexing.bm25.bm25_index import BM25Index
 from app.rag_engine.indexing.embeddings.embedding_service import EmbeddingService
 from app.rag_engine.indexing.embeddings.hf_embeddings import (
@@ -25,12 +26,32 @@ from app.rag_engine.retrieval.reranker.reranker import (
 from app.rag_engine.retrieval.retrieval_pipeline import (
     RetrievalPipeline,
 )
+from app.ai.llm.llm import get_llm
+
+from app.ai.services.intent_classifier import (
+    IntentClassifier,
+)
+from app.ai.services.query_rewriter import (
+    QueryRewriter,
+)
+from app.ai.services.query_expansion import (
+    QueryExpansion,
+)
+from app.ai.services.metadata_extractor import (
+    MetadataExtractor,
+)
 
 
 def build_retrieval_pipeline() -> RetrievalPipeline:
     """
     Build the complete retrieval pipeline.
     """
+
+    ###############################################################
+    # LLM
+    ###############################################################
+
+    llm = get_llm()
 
     ###############################################################
     # Embeddings
@@ -95,11 +116,36 @@ def build_retrieval_pipeline() -> RetrievalPipeline:
         model=cross_encoder,
     )
 
+   ###############################################################
+    # AI Services
+    ###############################################################
+
+    intent_classifier = IntentClassifier(
+        llm=llm,
+    )
+
+    query_rewriter = QueryRewriter(
+        llm=llm,
+    )
+
+    query_expansion = QueryExpansion(
+        llm=llm,
+    )
+
+    metadata_extractor = MetadataExtractor(
+        llm=llm,
+    )
+
     ###############################################################
     # Query Understanding
     ###############################################################
 
-    query_pipeline = QueryUnderstanding()
+    query_pipeline = QueryUnderstanding(
+        intent_classifier=intent_classifier,
+        query_rewriter=query_rewriter,
+        query_expansion=query_expansion,
+        metadata_extractor=metadata_extractor,
+    )
 
     ###############################################################
     # Retrieval Pipeline

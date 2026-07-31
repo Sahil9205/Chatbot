@@ -11,7 +11,6 @@ from app.core.logging import get_logger
 
 from app.rag_engine.retrieval.query_understanding import (
     QueryUnderstanding,
-    QueryUnderstandingPipeline,
 )
 from app.rag_engine.retrieval.hybrid_retriever import HybridRetriever
 from app.rag_engine.retrieval.reranker.reranker import (
@@ -40,7 +39,7 @@ class RetrievalPipeline:
         """
         Parameters
         ----------
-        query_pipeline : QueryUnderstandingPipeline
+        query_pipeline : QueryUnderstanding
 
         retriever : BaseRetriever
 

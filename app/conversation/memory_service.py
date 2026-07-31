@@ -6,7 +6,7 @@ Provides access to conversation memory.
 
 from app.core.logging import get_logger
 
-from .memory_service import ConversationService
+from .conversation_service import ConversationService
 from .schemas.message import Message
 
 

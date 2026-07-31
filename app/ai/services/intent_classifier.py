@@ -6,7 +6,9 @@ from __future__ import annotations
 
 import json
 
-from app.ai.llm.base import BaseLLM
+from langchain_core.language_models.chat_models import (
+    BaseChatModel,
+)
 from app.ai.prompts.intent_classifier import (
     INTENT_CLASSIFIER_SYSTEM_PROMPT,
 )
@@ -23,7 +25,7 @@ class IntentClassifier:
     Classifies the user's query into a predefined intent.
     """
 
-    def __init__(self, llm: BaseLLM) -> None:
+    def __init__(self, llm: BaseChatModel) -> None:
         """
         Initialize the intent classifier.
 
@@ -69,6 +71,9 @@ class IntentClassifier:
 
         try:
             response = self.llm.invoke(prompt)
+
+            content=response.content
+            logger.info("LLM response received.")
         except Exception as exc:
             logger.exception(
                 "LLM invocation failed during intent classification."
@@ -78,7 +83,7 @@ class IntentClassifier:
             ) from exc
 
         try:
-            result = json.loads(response)
+            result = json.loads(content)
         except json.JSONDecodeError as exc:
             logger.exception(
                 "LLM returned invalid JSON."
