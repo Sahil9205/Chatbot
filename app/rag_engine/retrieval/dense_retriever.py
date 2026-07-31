@@ -16,7 +16,7 @@ from .schemas.query import SearchQuery
 from .schemas.retrieved_chunk import RetrievedChunk
 from .schemas.source import RetrievalSource
 
-from base import BaseRetriever
+from .base import BaseRetriever
 
 logger = get_logger(__name__)
 

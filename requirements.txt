@@ -1,9 +1,10 @@
 langchain
 langgraph
+langchain_core
 langchain-huggingface
 langchain-community
 huggingface_hub
-Fastapi
+fastapi
 pypdf
 pydantic
 pydantic_settings

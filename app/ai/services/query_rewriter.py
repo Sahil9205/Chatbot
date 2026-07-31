@@ -9,6 +9,8 @@ from __future__ import annotations
 import json
 
 from app.ai.llm.llm import get_llm
+from langchain_core.language_models.chat_models import BaseChatModel
+
 from app.ai.prompts.query_rewriter import (
     QUERY_REWRITER_SYSTEM_PROMPT,
 )
@@ -24,6 +26,8 @@ class QueryRewriter:
     """
     Service responsible for rewriting user queries.
     """
+    def __init__(self, llm: BaseChatModel) -> None:
+        self.llm = llm
 
     def rewrite(
         self,
@@ -57,14 +61,12 @@ class QueryRewriter:
 
         logger.info("Rewriting user query.")
 
-        llm = get_llm()
-
         prompt = QUERY_REWRITER_SYSTEM_PROMPT.format(
             query=query,
         )
 
         try:
-            response = llm.invoke(prompt)
+            response = self.llm.invoke(prompt)
 
             rewritten_query = RewrittenQuery.model_validate_json(
                 response.content

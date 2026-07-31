@@ -16,9 +16,14 @@ Benefits
 """
 
 from functools import lru_cache
+import os
+
+from dotenv import load_dotenv
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+load_dotenv()  # Load environment variables from .env file
 
 
 class Settings(BaseSettings):
@@ -56,17 +61,17 @@ class Settings(BaseSettings):
 
     DEFAULT_LLM_PROVIDER: str = "huggingface"
 
-    DEFAULT_MODEL: str = "mistralai/Mistral-7B-Instruct-v0.3"
+    LLM_MODEL_NAME: str = "mistralai/Mistral-7B-Instruct-v0.3"
 
     TEMPERATURE: float = 0.2
 
-    MAX_TOKENS: int = 2048
+    MAX_NEW_TOKENS: int = 2048
 
     # ======================================================
     # Embeddings
     # ======================================================
 
-    EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
+    EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"
 
     # ======================================================
     # Reranker
@@ -84,6 +89,8 @@ class Settings(BaseSettings):
 
     ANTHROPIC_API_KEY: str = ""
 
+    HUGGINGFACE_API_KEY: str = os.getenv("HUGGINGFACE_API_KEY")
+
     # ======================================================
     # Database
     # ======================================================
@@ -96,17 +103,14 @@ class Settings(BaseSettings):
     # Qdrant
     # ======================================================
 
-    QDRANT_URL: str = "http://localhost:6333"
-
-    QDRANT_API_KEY: str | None = None
-
-    QDRANT_COLLECTION_NAME: str = "company_documents"
-
+    QDRANT_URL: str = load_dotenv("QDRANT_URL")
+    QDRANT_API_KEY: str = load_dotenv("QDRANT_API_KEY") 
+    QDRANT_COLLECTION_NAME: str = load_dotenv("QDRANT_COLLECTION_NAME")
     QDRANT_DISTANCE_METRIC: str = "cosine"
 
     # ======================================================
     # RAG
-    # ======================================================
+    # ======================================================sw
 
     CHUNK_SIZE: int = 1000
 

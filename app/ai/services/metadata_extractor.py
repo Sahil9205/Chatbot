@@ -8,6 +8,8 @@ to improve filtered document retrieval.
 from __future__ import annotations
 
 from app.ai.llm.llm import get_llm
+from langchain_core.language_models.chat_models import BaseChatModel
+
 from app.ai.prompts.metadata_extractor import (METADATA_EXTRACTOR_SYSTEM_PROMPT,)
 from app.ai.schemas.metadata import MetadataExtraction
 
@@ -22,6 +24,8 @@ class MetadataExtractor:
     Service responsible for extracting metadata filters
     from a user's query.
     """
+    def __init__(self, llm: BaseChatModel) -> None:
+        self.llm = llm
 
     def extract(self,query: str,) -> MetadataExtraction:
         """
@@ -51,14 +55,14 @@ class MetadataExtractor:
 
         logger.info("Extracting metadata filters.")
 
-        llm = get_llm()
+        
 
         prompt = METADATA_EXTRACTOR_SYSTEM_PROMPT.format(
             query=query,
         )
 
         try:
-            response = llm.invoke(prompt)
+            response = self.llm.invoke(prompt)
 
             metadata = MetadataExtraction.model_validate_json(response.content)
 

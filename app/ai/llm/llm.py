@@ -8,7 +8,7 @@ Every component should obtain the LLM instance from this module.
 """
 
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_huggingface import ChatHuggingFace
+from langchain_huggingface import ChatHuggingFace,HuggingFaceEndpoint
 
 from app.core.config import settings
 from app.core.exceptions import ConfigurationError, LLMError
@@ -59,13 +59,17 @@ def initialize_llm() -> None:
             settings.LLM_MODEL_NAME,
         )
 
-        _llm = ChatHuggingFace(
-            repo_id=settings.LLM_MODEL_NAME,
-            huggingfacehub_api_token=settings.HUGGINGFACE_API_KEY,
-            temperature=settings.TEMPERATURE,
-            max_new_tokens=settings.MAX_NEW_TOKENS,
-        )
+        endpoint = HuggingFaceEndpoint(
+        repo_id=settings.LLM_MODEL_NAME,
+        huggingfacehub_api_token=settings.HUGGINGFACE_API_KEY,
+        task="text-generation",
+        temperature=settings.TEMPERATURE,
+        max_new_tokens=settings.MAX_NEW_TOKENS,
+    )
 
+        _llm = ChatHuggingFace(
+            llm=endpoint,
+        )
         logger.info(
             "Successfully initialized model: %s",
             settings.LLM_MODEL_NAME,

@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.ai.llm.llm import initialize_llm
 from app.api.dependencies import get_container
 from app.core.logging import get_logger
 
@@ -27,6 +28,10 @@ async def lifespan(
     ###############################################################
 
     logger.info("Starting application.")
+
+
+    initialize_llm()
+
 
     # Initialize application container.
     get_container()

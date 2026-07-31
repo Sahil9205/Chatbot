@@ -2,7 +2,7 @@
 Bootstrap the Retrieval Pipeline.
 """
 
-from app.ai import llm
+
 from app.rag_engine.indexing.bm25.bm25_index import BM25Index
 from app.rag_engine.indexing.embeddings.embedding_service import EmbeddingService
 from app.rag_engine.indexing.embeddings.hf_embeddings import (

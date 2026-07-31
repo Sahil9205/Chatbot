@@ -8,6 +8,8 @@ to improve hybrid document retrieval.
 from __future__ import annotations
 
 from app.ai.llm.llm import get_llm
+from langchain_core.language_models.chat_models import BaseChatModel
+
 from app.ai.prompts.query_expansion import (QUERY_EXPANSION_SYSTEM_PROMPT,)
 from app.ai.schemas.expanded_query import ExpandedQuery
 
@@ -22,6 +24,9 @@ class QueryExpansion:
     Service responsible for expanding user queries into
     multiple semantically similar search queries.
     """
+    def __init__(self, llm: BaseChatModel) -> None:
+        self.llm = llm
+    
 
     def expand(self,query: str,) -> ExpandedQuery:
         """
@@ -53,14 +58,14 @@ class QueryExpansion:
 
         logger.info("Expanding user query.")
 
-        llm = get_llm()
+        
 
         prompt = QUERY_EXPANSION_SYSTEM_PROMPT.format(
             query=query,
         )
 
         try:
-            response = llm.invoke(prompt)
+            response = self.llm.invoke(prompt)
 
             expanded_query = ExpandedQuery.model_validate_json(
                 response.content
