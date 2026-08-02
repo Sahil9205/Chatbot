@@ -15,4 +15,9 @@ rank-bm25
 
 uvicorn
 
+langfuse
+
+ragas
+
+
 # -e .
