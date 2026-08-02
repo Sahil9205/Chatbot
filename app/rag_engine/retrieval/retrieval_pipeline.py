@@ -7,19 +7,19 @@ user query to reranked document chunks.
 
 from time import perf_counter
 
+from typing import Any
+
 from app.core.logging import get_logger
+
+from app.observability.manager import ObservabilityManager
 
 from app.rag_engine.retrieval.query_understanding import (
     QueryUnderstanding,
 )
 from app.rag_engine.retrieval.hybrid_retriever import HybridRetriever
-from app.rag_engine.retrieval.reranker.reranker import (
-    RerankerService,
-)
+from app.rag_engine.retrieval.reranker.reranker import RerankerService
 
-from app.rag_engine.retrieval.schemas.retrieval_result import (
-    RetrievalResult,
-)
+from app.rag_engine.retrieval.schemas.retrieval_result import RetrievalResult
 
 
 logger = get_logger(__name__)
@@ -35,6 +35,7 @@ class RetrievalPipeline:
         query_pipeline: QueryUnderstanding,
         retriever: HybridRetriever,
         reranker: RerankerService,
+        observability: ObservabilityManager
     ) -> None:
         """
         Parameters
@@ -49,6 +50,7 @@ class RetrievalPipeline:
         self.query_pipeline = query_pipeline
         self.retriever = retriever
         self.reranker = reranker
+        self.observability = observability
 
     ####################################################################
     # Public API
@@ -57,6 +59,7 @@ class RetrievalPipeline:
     def retrieve(
         self,
         query: str,
+        trace: Any = None,
     ) -> RetrievalResult:
         """
         Execute the retrieval pipeline.
@@ -66,61 +69,80 @@ class RetrievalPipeline:
             "Starting retrieval pipeline."
         )
 
+
+
+
         start_time = perf_counter()
 
-        ###############################################################
-        # Query Understanding
-        ###############################################################
 
-        search_query = self.query_pipeline.process(
-            query=query,
-        )
+        try:
 
-        ###############################################################
-        # Hybrid Retrieval
-        ###############################################################
+            ###############################################################
+            # Query Understanding
+            ###############################################################
 
-        retrieved_chunks = self.retriever.retrieve(
-            search_query,
-        )
+            search_query = self.query_pipeline.process(
+                query=query,
+            )
 
-        ###############################################################
-        # CrossEncoder Reranking
-        ###############################################################
+            ###############################################################
+            # Hybrid Retrieval
+            ###############################################################
 
-        reranked_chunks = self.reranker.rerank(
+            retrieved_chunks = self.retriever.retrieve(
+                search_query,
+            )
 
-            query=search_query.rewritten_query,
+            ###############################################################
+            # CrossEncoder Reranking
+            ###############################################################
 
-            chunks=retrieved_chunks,
+            reranked_chunks = self.reranker.rerank(
 
-            top_k=search_query.top_k,
-        )
+                query=search_query.rewritten_query,
 
-        ###############################################################
-        # Statistics
-        ###############################################################
+                chunks=retrieved_chunks,
 
-        retrieval_time = perf_counter() - start_time
+                top_k=search_query.top_k,
+            )
 
-        logger.info(
+            ###############################################################
+            # Statistics
+            ###############################################################
 
-            "Retrieval completed in %.3f seconds.",
+            retrieval_time = perf_counter() - start_time
 
-            retrieval_time,
-        )
+            logger.info(
 
-        ###############################################################
-        # Final Result
-        ###############################################################
+                "Retrieval completed in %.3f seconds.",
 
-        return RetrievalResult(
+                retrieval_time,
+            )
 
-            query=query,
+            ###############################################################
+            # Final Result
+            ###############################################################
 
-            retrieved_chunks=reranked_chunks,
+            return RetrievalResult(
 
-            retrieval_time=retrieval_time,
+                query=query,
 
-            total_chunks=len(reranked_chunks),
-        )
+                retrieved_chunks=reranked_chunks,
+
+                retrieval_time=retrieval_time,
+
+                total_chunks=len(reranked_chunks),
+            )
+        except Exception as exc:
+            logger.exception("Retrieval pipeline failed.")
+
+
+            self.observability.record_error(
+                trace=None,
+                exc=exc,
+            )
+
+        
+
+            raise
+

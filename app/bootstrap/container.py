@@ -16,6 +16,8 @@ from app.conversation.conversation_service import ConversationService
 from app.conversation.session_service import SessionService
 from app.conversation.memory_service import MemoryService
 
+from app.bootstrap.observability import build_observability
+
 
 class ApplicationContainer:
     """
@@ -31,7 +33,8 @@ class ApplicationContainer:
         # RAG Engine
         ###############################################################
 
-        self._rag_engine = build_rag_engine()
+        self._observability = build_observability()
+        self._rag_engine = build_rag_engine(observability=self._observability,)
 
         ###############################################################
         # Conversation Layer

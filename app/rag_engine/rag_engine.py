@@ -18,6 +18,8 @@ from app.rag_engine.retrieval.retrieval_pipeline import RetrievalPipeline
 
 logger = get_logger(__name__)
 
+from app.observability.manager import ObservabilityManager
+
 
 class RAGEngine:
     """
@@ -38,6 +40,7 @@ class RAGEngine:
         self,
         retrieval_pipeline: RetrievalPipeline,
         generation_pipeline: GenerationPipeline,
+        observability: ObservabilityManager,
     ) -> None:
         """
         Parameters
@@ -73,10 +76,18 @@ class RAGEngine:
 
         logger.info("Starting RAG Engine.")
 
+        trace = self.observability.start_trace(
+            name="rag_request",
+            input={
+                "query": query,
+            },
+        )
+
         try:
 
             retrieval_result = self.retrieval_pipeline.retrieve(
-                query
+                query=query,
+                trace=trace,
             )
 
             generation_request = GenerationRequest(
@@ -87,15 +98,25 @@ class RAGEngine:
             )
 
             response = self.generation_pipeline.generate(
-                generation_request
+                request=generation_request,
+                trace=trace,
             )
 
             logger.info("RAG Engine completed successfully.")
 
+            self.observability.end_trace(trace)
+
             return response
 
-        except Exception:
+        except Exception as exc:
 
             logger.exception("RAG Engine failed.")
+
+            self.observability.record_error(
+                trace,
+                exc,
+            )
+
+            self.observability.end_trace(trace)
 
             raise

@@ -26,8 +26,9 @@ from app.rag_engine.generation.response_validator import (
     ResponseValidator,
 )
 
+from app.observability.manager import ObservabilityManager
 
-def build_generation_pipeline() -> GenerationPipeline:
+def build_generation_pipeline(observability: ObservabilityManager,) -> GenerationPipeline:
     """
     Build the complete generation pipeline.
     """
@@ -80,4 +81,5 @@ def build_generation_pipeline() -> GenerationPipeline:
         citation_builder=citation_builder,
         hallucination_guard=hallucination_guard,
         response_validator=response_validator,
+        observability=observability,
     )

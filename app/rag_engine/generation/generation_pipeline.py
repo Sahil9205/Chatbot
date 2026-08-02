@@ -6,7 +6,11 @@ Coordinates the complete answer generation pipeline.
 
 from time import perf_counter
 
+from typing import Any
+
 from app.core.logging import get_logger
+
+from app.observability.manager import ObservabilityManager
 
 from .answer_generator import AnswerGenerator
 from .citation_builder import CitationBuilder
@@ -30,6 +34,7 @@ class GenerationPipeline:
         citation_builder: CitationBuilder,
         hallucination_guard: HallucinationGuard,
         response_validator: ResponseValidator,
+        observability: ObservabilityManager,
     ) -> None:
         """
         Parameters
@@ -51,10 +56,12 @@ class GenerationPipeline:
         self.citation_builder = citation_builder
         self.hallucination_guard = hallucination_guard
         self.response_validator = response_validator
+        self.observability = observability
 
     def generate(
         self,
         request: GenerationRequest,
+        trace: Any = None,
     ) -> GenerationResponse:
         """
         Generate the final answer.
@@ -70,7 +77,19 @@ class GenerationPipeline:
 
         logger.info("Starting generation pipeline.")
 
+        trace = self.observability.start_trace(
+            name="generation_pipeline",
+            input={
+                "query": request.query,
+            },
+        )
+
         start_time = perf_counter()
+
+        span = self.observability.start_span(
+            trace,
+            "generate_answer",
+        )
 
         try:
             answer = self.answer_generator.generate(request)
@@ -101,8 +120,20 @@ class GenerationPipeline:
 
             logger.info("Generation pipeline completed successfully.")
 
+            self.observability.end_span(span)
+
+        
+
             return validated_response
 
-        except Exception:
+        except Exception as exc:
             logger.exception("Generation pipeline failed.")
+
+            self.observability.record_error(
+                trace,
+                exc,
+            )
+
+            self.observability.end_span(span)
+
             raise

@@ -3,6 +3,7 @@ Bootstrap the Retrieval Pipeline.
 """
 
 
+from app.observability.manager import ObservabilityManager
 from app.rag_engine.indexing.bm25.bm25_index import BM25Index
 from app.rag_engine.indexing.embeddings.embedding_service import EmbeddingService
 from app.rag_engine.indexing.embeddings.hf_embeddings import (
@@ -42,7 +43,7 @@ from app.ai.services.metadata_extractor import (
 )
 
 
-def build_retrieval_pipeline() -> RetrievalPipeline:
+def build_retrieval_pipeline(observability: ObservabilityManager,) -> RetrievalPipeline:
     """
     Build the complete retrieval pipeline.
     """
@@ -155,6 +156,7 @@ def build_retrieval_pipeline() -> RetrievalPipeline:
         query_pipeline=query_pipeline,
         retriever=hybrid_retriever,
         reranker=reranker,
+        observability=observability,
     )
 
     return retrieval_pipeline

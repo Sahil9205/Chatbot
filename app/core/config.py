@@ -133,11 +133,24 @@ class Settings(BaseSettings):
     RETRIEVAL_SCORE_THRESHOLD: float = 0.70
 
     MINIMUM_CITATIONS: int = 1
+
+
+    # ======================================================
+    # Observability
+    # ======================================================
+
+    LANGFUSE_PUBLIC_KEY: str = ""
+
+    LANGFUSE_SECRET_KEY: str = ""
+
+    LANGFUSE_HOST: str = "http://localhost:3000"
+
     
 
     # ======================================================
     # Logging
     # ======================================================
+
 
     LOG_LEVEL: str = "INFO"
 
