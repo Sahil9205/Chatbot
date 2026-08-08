@@ -1,4 +1,4 @@
-# Production-Grade Enterprise RAG Chatbot
+# Production-Grade RAG Chatbot
 
 > A production-ready, modular Retrieval-Augmented Generation (RAG) chatbot built using FastAPI, LangGraph, LlamaIndex, LiteLLM, Qdrant, PostgreSQL, and Redis. The platform is designed to provide secure, scalable, and intelligent conversational experiences over enterprise knowledge bases.
 
